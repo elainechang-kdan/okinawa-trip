@@ -202,10 +202,30 @@ section{scroll-margin-top:calc(var(--nav-h) + 12px);margin-top:36px}
 .todo h3{font-size:17px;font-weight:400;display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .todo h3 .chip{width:14px;height:14px;border:2.5px solid var(--ink);border-radius:50%}
 .todo ul{list-style:none}
-.todo li{border-top:2px dashed #d8d2c8}
+.todo li{border-top:2px dashed #d8d2c8;display:flex;align-items:center;gap:6px}
+.todo li > label{flex:1;min-width:0}
 .todo li:first-child{border-top:0}
 .todo label{display:flex;align-items:center;gap:12px;padding:10px 2px;cursor:pointer;border-radius:10px}
-.todo input{position:absolute;opacity:0;width:1px;height:1px}
+.todo input[type="checkbox"]{position:absolute;opacity:0;width:1px;height:1px}
+.todo .txt{min-width:0;overflow-wrap:anywhere}
+.todo .del{
+  flex:none;width:30px;height:30px;border:2.5px solid var(--ink);border-radius:50%;
+  background:#fff;font-size:18px;line-height:1;cursor:pointer;display:grid;place-items:center
+}
+.todo .del:hover{background:var(--coral-l)}
+.add{display:flex;gap:8px;margin-top:10px}
+.add input{
+  flex:1;min-width:0;font:inherit;font-size:16px;color:var(--ink);
+  background:var(--paper);border:var(--line);border-radius:14px;padding:8px 12px
+}
+.add input::placeholder{color:var(--ink);opacity:.4}
+.add button{
+  flex:none;font-size:15px;padding:8px 14px;border:var(--line);border-radius:14px;
+  background:var(--yellow);cursor:pointer;box-shadow:0 3px 0 var(--ink)
+}
+.add button:active{transform:translateY(3px);box-shadow:none}
+.add input:focus-visible,.add button:focus-visible,.todo .del:focus-visible{outline:3px dashed var(--ink);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .box{
   width:26px;height:26px;flex:none;border:var(--line);border-radius:9px;background:#fff;
   display:grid;place-items:center;transition:background .2s,transform .2s
@@ -568,35 +588,37 @@ const RIDE = {
   walk:{cls:'t-walk',label:'👟 步行'}
 };
 const DAYS = [
-  {date:'11/29',wd:'日',icon:'i-plane',title:'啟程！飛向南國',sub:'抵達那霸取車，先到浦添逛街看海',items:[
+  {date:'11/29',wd:'日',icon:'i-plane',title:'啟程！飛向沖繩度假',sub:'抵達那霸取車，先到浦添逛街看海',items:[
     {t:'09:30–11:00',e:'🚕',n:'台北 → 桃園機場',c:'交通',s:'已預訂',ride:'taxi'},
     {t:'13:30–15:55',e:'🛫',n:'桃園 → 那霸 FD230',c:'交通',s:'已預訂',ride:'plane',memo:'泰國亞洲航空'},
     {t:'17:30–21:30',e:'🏢',n:'PARCO CITY',c:'景點',s:'不用訂',ride:'car',memo:'機場取車後出發，海景購物中心'},
     {t:'22:00',e:'🏨',n:'入住 星野 BEB5 瀨良垣',c:'住宿',s:'已預訂',ride:'car'}
   ]},
-  {date:'11/30',wd:'一',icon:'i-dolphin',title:'和海豚見面的一天',sub:'北上本部，一整天慢慢玩',items:[
-    {t:'10:00–17:00',e:'🐬',n:'もとぶ元気村',c:'景點',s:'未預訂',ride:'car',must:true,memo:'海豚體驗記得先預約'}
-  ],free:'晚上回 BEB5 休息，享受飯店時光 ♨'},
-  {date:'12/01',wd:'二',icon:'i-torii',title:'中部巡禮，移動到那霸',sub:'神社、美軍基地、港川外人住宅',items:[
+  {date:'11/30',wd:'一',icon:'i-dolphin',title:'海豚與星光的一天',sub:'白天到本部看海豚，晚上去植物園看燈',items:[
+    {t:'10:00–17:00',e:'🐬',n:'もとぶ元気村',c:'景點',s:'未預訂',ride:'car',must:true,memo:'海豚體驗記得先預約'},
+    {t:'20:00–22:00',e:'🌳',n:'東南植物樂園',c:'景點',s:'未預訂',ride:'car',memo:'星光門票記得先買'}
+  ]},
+  {date:'12/01',wd:'二',icon:'i-torii',title:'中部巡禮，移動到那霸',sub:'洞窟神社、港川外人住宅',items:[
     {t:'09:30–11:30',e:'⛩️',n:'普天滿宮',c:'景點',s:'不用訂',ride:'car',must:true,memo:'有鐘乳石洞窟的神社'},
-    {t:'12:00–14:00',e:'🧇',n:'Cocoroar',c:'美食',s:'未預訂',ride:'car'},
-    {t:'15:00–17:00',e:'🛩️',n:'普天間飛行場',c:'景點',s:'不用訂',ride:'car'},
-    {t:'18:00–20:00',e:'🥘',n:'土鍋飯ぽかぽか minatogawa',c:'美食',s:'未預訂',ride:'car',must:true},
+    {t:'12:15–14:15',e:'🥘',n:'土鍋飯ぽかぽか minatogawa',c:'美食',s:'已預訂',ride:'car',must:true},
+    {t:'14:30–16:30',e:'🧇',n:'Cocoroar',c:'美食',s:'未預訂',ride:'car'},
+    {t:'16:40–18:40',e:'👶🏻',n:'Birthday 港川店',c:'景點',s:'不用訂',ride:'car',memo:'嬰幼兒用品'},
     {t:'22:00',e:'🏨',n:'入住 那霸刻之宿飯店',c:'住宿',s:'已預訂',ride:'car'}
   ]},
-  {date:'12/02',wd:'三',icon:'i-rail',title:'那霸市區散步',sub:'搭單軌、走走吃吃',items:[
-    {t:'09:00–11:30',e:'⛩️',n:'沖宮神社',c:'景點',s:'不用訂',ride:'rail'},
-    {t:'12:00–14:00',e:'🧈',n:'鳥與卵專門店 鳥玉 泉崎店',c:'美食',s:'未預訂',ride:'walk'},
-    {t:'13:00–16:30',e:'🍵',n:'抹茶カフェ SUGURI',c:'美食',s:'不用訂',ride:'walk'},
-    {t:'14:30–17:00',e:'🏢',n:'琉貿百貨',c:'景點',s:'不用訂',ride:'walk'},
-    {t:'18:00–20:00',e:'🍲',n:'一心壽喜燒',c:'美食',s:'未預訂',ride:'walk',must:true}
+  {date:'12/02',wd:'三',icon:'i-hibiscus',title:'那霸市區散步',sub:'開車逛那霸吃吃喝喝，晚上逛國際通',items:[
+    {t:'09:00–10:30',e:'⛩️',n:'沖宮神社',c:'景點',s:'不用訂',ride:'car'},
+    {t:'12:00–14:00',e:'🧈',n:'鳥與卵專門店 鳥玉 泉崎店',c:'美食',s:'未預訂',ride:'car'},
+    {t:'14:00–16:30',e:'🍵',n:'抹茶カフェ SUGURI',c:'美食',s:'不用訂',ride:'car'},
+    {t:'17:15–19:15',e:'🥩',n:'久茂地燒肉',c:'美食',s:'已預訂',ride:'car'},
+    {t:'20:00–22:00',e:'💰',n:'唐吉訶德 國際通店',c:'景點',s:'不用訂',ride:'car'}
   ]},
-  {date:'12/03',wd:'四',icon:'i-beach',title:'自由日，睡到自然醒',sub:'白天留白，想去哪就去哪',free:'☀ 白天彈性安排，晚餐記得訂位',items:[
-    {t:'18:00–20:00',e:'🥩',n:'久茂地燒肉',c:'美食',s:'未預訂',ride:'walk'}
+  {date:'12/03',wd:'四',icon:'i-beach',title:'睡到自然醒的悠閒日',sub:'上午留白，下午逛百貨',free:'☀ 上午彈性安排，慢慢來',items:[
+    {t:'14:30–17:00',e:'🏢',n:'琉貿百貨',c:'景點',s:'不用訂',ride:'car'},
+    {t:'18:00–20:00',e:'🍲',n:'一心壽喜燒',c:'美食',s:'已預訂',ride:'car',must:true}
   ],freeFirst:true},
   {date:'12/04',wd:'五',icon:'i-bag',title:'最後採買，回家囉',sub:'11:00 退房 → Outlet → 還車 → 機場',items:[
-    {t:'11:00–15:30',e:'🛍️',n:'ASHIBINAA Outlet',c:'景點',s:'不用訂',ride:'car'},
     {t:'11:30–13:30',e:'🍲',n:'Shima ShabuShabu NAKAMA',c:'美食',s:'未預訂',ride:'car'},
+    {t:'14:00–15:30',e:'🛍️',n:'ASHIBINAA Outlet',c:'景點',s:'不用訂',ride:'car'},
     {t:'18:10–18:50',e:'🛬',n:'那霸 → 桃園 VZ569',c:'交通',s:'已預訂',ride:'plane',memo:'泰國越捷航空'}
   ]}
 ];
@@ -676,42 +698,76 @@ function show(i, animate){
 /* ---------- 待辦清單 ---------- */
 const TODO = [
   {title:'待預訂', color:'var(--coral)', items:[
-    ['もとぶ元気村','11/30'],['Cocoroar','12/01'],['土鍋飯ぽかぽか minatogawa','12/01'],
-    ['鳥與卵專門店 鳥玉','12/02'],['一心壽喜燒','12/02'],['久茂地燒肉','12/03'],['Shima ShabuShabu NAKAMA','12/04']
+    ['もとぶ元気村','11/30'],['Cocoroar','12/01'],
+    ['鳥與卵專門店 鳥玉','12/02'],['Shima ShabuShabu NAKAMA','12/04']
   ]},
-  {title:'出發前待辦', color:'var(--yellow)', items:[['買 eSIM'],['植物園星光門票'],['換日幣']]},
-  {title:'行李清單', color:'var(--water)', items:[['護照'],['衣物'],['現金'],['小孩用品']]}
+  {title:'出發前待辦', color:'var(--yellow)', custom:true, ph:'例如：預約租車兒童座椅', items:[['買 eSIM'],['植物園星光門票'],['換日幣']]},
+  {title:'行李清單', color:'var(--water)', custom:true, ph:'例如：防曬乳', items:[['護照'],['衣物'],['現金'],['小孩用品']]}
 ];
 const KEY = 'okinawa-trip-todo-v1';
-let done = {};
+const KEY_EXTRA = 'okinawa-trip-todo-extra-v1';
+let done = {}, extra = {};
 try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e) {}
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e) {} };
+try { extra = JSON.parse(localStorage.getItem(KEY_EXTRA)) || {}; } catch(e) {}
+const save = () => {
+  try { localStorage.setItem(KEY, JSON.stringify(done)); localStorage.setItem(KEY_EXTRA, JSON.stringify(extra)); } catch(e) {}
+};
 
 const groups = document.getElementById('todo-groups');
-groups.innerHTML = TODO.map((g,gi) => `
+function row(g, gi, k, t, sub, mine){
+  const key = g.title + '|' + t;
+  return `<li><label><input type="checkbox" id="td-${gi}-${mine ? 'x' : ''}${k}" data-key="${esc(key)}"${done[key] ? ' checked' : ''}>
+    <span class="box" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+    <span class="txt">${esc(t)}</span>${sub ? `<span class="sub">${sub}</span>` : ''}</label>
+    ${mine ? `<button type="button" class="del" data-group="${gi}" data-idx="${k}" aria-label="刪除「${esc(t)}」">×</button>` : ''}</li>`;
+}
+function renderTodo(focusGroup){
+  groups.innerHTML = TODO.map((g,gi) => `
   <div class="card todo">
     <h3><span class="chip" style="background:${g.color}"></span>${g.title}</h3>
-    <ul>${g.items.map(([t,sub],k) => {
-      const id = `td-${gi}-${k}`;
-      return `<li><label><input type="checkbox" id="${id}" data-key="${esc(g.title + '|' + t)}"${done[g.title + '|' + t] ? ' checked' : ''}>
-        <span class="box" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
-        <span class="txt">${esc(t)}</span>${sub ? `<span class="sub">${sub}</span>` : ''}</label></li>`;
-    }).join('')}</ul>
+    <ul>${g.items.map(([t,sub],k) => row(g, gi, k, t, sub, false)).join('')}${(extra[g.title] || []).map((t,k) => row(g, gi, k, t, '', true)).join('')}</ul>
+    ${g.custom ? `<form class="add" data-group="${gi}">
+      <label class="sr" for="add-${gi}">新增${g.title}項目</label>
+      <input type="text" id="add-${gi}" maxlength="40" placeholder="${g.ph}" autocomplete="off">
+      <button type="submit">＋ 新增</button>
+    </form>` : ''}
   </div>`).join('');
+  if (focusGroup != null){ const f = document.getElementById('add-' + focusGroup); if (f) f.focus(); }
+  updateProgress();
+}
+
+groups.addEventListener('submit', e => {
+  e.preventDefault();
+  const gi = +e.target.dataset.group, g = TODO[gi];
+  const input = e.target.querySelector('input');
+  const t = input.value.trim();
+  if (!t) { input.focus(); return; }
+  const list = extra[g.title] || (extra[g.title] = []);
+  if (!list.includes(t) && !g.items.some(([x]) => x === t)) list.push(t);
+  save(); renderTodo(gi);
+});
+groups.addEventListener('click', e => {
+  const b = e.target.closest('.del');
+  if (!b) return;
+  const g = TODO[+b.dataset.group], list = extra[g.title] || [];
+  const [t] = list.splice(+b.dataset.idx, 1);
+  delete done[g.title + '|' + t];
+  save(); renderTodo(+b.dataset.group);
+});
 
 function updateProgress(){
-  const all = groups.querySelectorAll('input');
+  const all = groups.querySelectorAll('input[type="checkbox"]');
   const n = [...all].filter(x => x.checked).length;
   document.getElementById('todo-count').textContent = `完成 ${n} / ${all.length}`;
   document.getElementById('todo-bar').style.width = (all.length ? n / all.length * 100 : 0) + '%';
 }
 groups.addEventListener('change', e => {
-  if (!e.target.matches('input')) return;
+  if (!e.target.matches('input[type="checkbox"]')) return;
   const k = e.target.dataset.key;
   if (e.target.checked) done[k] = true; else delete done[k];
   save(); updateProgress();
 });
-updateProgress();
+renderTodo();
 
 /* ---------- 選單高亮 ---------- */
 (function(){
